@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dajavshne.online.ge - Global & Local Travel Booking</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --secondary: #0f172a;
+            --accent: #f59e0b;
+            --bg-light: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius: 16px;
+            --shadow: 0 10px 25px -5px rgba(0,0,0,0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', 'Noto Sans Georgian', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo span { color: var(--secondary); }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Language Selector */
+        .lang-selector { position: relative; }
+
+        .lang-btn {
+            background: #f1f5f9;
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .lang-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 115%;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            width: 160px;
+            overflow: hidden;
+            z-index: 200;
+        }
+
+        .lang-dropdown.show { display: block; }
+
+        .lang-option {
+            padding: 10px 14px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.2s;
+        }
+
+        .lang-option:hover { background: #f1f5f9; }
+
+        .btn-bookings {
+            background: var(--secondary);
+            color: white;
+            padding: 8px 18px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            background: linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.8)), url('https://images.unsplash.com/photo-1565008447742-97f6f38c985c?auto=format&fit=crop&w=1600&q=80') center/cover;
+            color: white;
+            padding: 4rem 1.5rem;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        .type-toggle {
+            display: inline-flex;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(8px);
+            padding: 4px;
+            border-radius: 30px;
+            margin-bottom: 1.5rem;
+        }
+
+        .type-btn {
+            padding: 8px 22px;
+            border-radius: 25px;
+            border: none;
+            background: transparent;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .type-btn.active {
+            background: white;
+            color: var(--secondary);
+        }
+
+        .hero h1 {
+            font-size: 2.3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.25;
+        }
+
+        .hero p {
+            font-size: 1.05rem;
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+        }
+
+        /* Categories Filter Chips */
+        .categories-nav {
+            max-width: 1200px;
+            margin: 1.5rem auto 0;
+            padding: 0 1.5rem;
+            display: flex;
+            gap: 0.8rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+
+        .cat-chip {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 8px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+
+        .cat-chip.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Listings Grid */
+        .container {
+            max-width: 1200px;
+            margin: 1.5rem auto 3rem;
+            padding: 0 1.5rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s;
+        }
+
+        .card:hover { transform: translateY(-4px); }
+
+        .card-img {
+            height: 200px;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(15, 23, 42, 0.85);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            backdrop-filter: blur(4px);
+        }
+
+        .card-content {
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .card-loc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .history-box {
+            background: #f8fafc;
+            border-left: 3px solid var(--accent);
+            padding: 10px 12px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.83rem;
+            color: #475569;
+            margin-bottom: 1.2rem;
+        }
+
+        .card-footer {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .price {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .price span {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .btn-book {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.7rem; }
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="#" class="logo"><i class="fa-solid fa-compass"></i> dajavshne<span>.online.ge</span></a>
+            <div class="nav-controls">
+                <div class="lang-selector">
+                    <button class="lang-btn" id="langBtn" onclick="toggleLangDropdown()">
+                        <i class="fa-solid fa-globe"></i> <span id="currentLang">🇬🇪 ქართული</span>
+                    </button>
+                    <div class="lang-dropdown" id="langDropdown">
+                        <div class="lang-option" onclick="setLanguage('ka')">🇬🇪 ქართული</div>
+                        <div class="lang-option" onclick="setLanguage('en')">🇬🇧 English</div>
+                        <div class="lang-option" onclick="setLanguage('de')">🇩🇪 Deutsch</div>
+                        <div class="lang-option" onclick="setLanguage('es')">🇪🇸 Español</div>
+                        <div class="lang-option" onclick="setLanguage('fr')">🇫🇷 Français</div>
+                        <div class="lang-option" onclick="setLanguage('ru')">🇷🇺 Русский</div>
+                    </div>
+                </div>
+                <button class="btn-bookings"><i class="fa-solid fa-ticket"></i> <span data-i18n="myBookings">ჩემი დაჯავშნები</span></button>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="type-toggle">
+                <button class="type-btn active" onclick="filterType('all', this)" data-i18n="allDestinations">ყველა მიმართულება</button>
+                <button class="type-btn" onclick="filterType('georgia', this)" data-i18n="georgiaTravel">საქართველოს კუთხეები</button>
+                <button class="type-btn" onclick="filterType('abroad', this)" data-i18n="outboundTravel">საზღვარგარეთი</button>
+            </div>
+            
+            <h1 data-i18n="heroTitle">დაჯავშნე სასტუმროები, ფრენები, ტრანსპორტი, მუზეუმები და რესტორნები</h1>
+            <p data-i18n="heroSub">აღმოაჩინე სვანეთი, რაჭა, კახეთი, თუშეთი ან იმოგზაურე პარიზში, რომსა და სტამბოლში. გაეცანი ზუსტ ისტორიას და დაჯავშნე ონლაინ.</p>
+        </div>
+    </section>
+
+    <!-- Categories Filter -->
+    <div class="categories-nav">
+        <button class="cat-chip active" onclick="filterCategory('all', this)"><i class="fa-solid fa-border-all"></i> <span data-i18n="catAll">ყველა სერვისი</span></button>
+        <button class="cat-chip" onclick="filterCategory('hotel', this)"><i class="fa-solid fa-hotel"></i> <span data-i18n="catHotels">სასტუმროები</span></button>
+        <button class="cat-chip" onclick="filterCategory('flight', this)"><i class="fa-solid fa-plane"></i> <span data-i18n="catFlights">ფრენები</span></button>
+        <button class="cat-chip" onclick="filterCategory('transport', this)"><i class="fa-solid fa-bus"></i> <span data-i18n="catTransport">ტრანსპორტი</span></button>
+        <button class="cat-chip" onclick="filterCategory('museum', this)"><i class="fa-solid fa-landmark"></i> <span data-i18n="catMuseums">მუზეუმები</span></button>
+        <button class="cat-chip" onclick="filterCategory('restaurant', this)"><i class="fa-solid fa-utensils"></i> <span data-i18n="catRestaurants">რესტორნები</span></button>
+        <button class="cat-chip" onclick="filterCategory('activity', this)"><i class="fa-solid fa-person-hiking"></i> <span data-i18n="catActivities">აქტივობები</span></button>
+    </div>
+
+    <main class="container">
+        <div class="grid" id="listingsGrid"></div>
+    </main>
+
+    <script>
+        const i18n = {
+            ka: {
+                myBookings: "ჩემი დაჯავშნები",
+                allDestinations: "ყველა მიმართულება",
+                georgiaTravel: "საქართველოს კუთხეები",
+                outboundTravel: "საზღვარგარეთი",
+                heroTitle: "დაჯავშნე სასტუმროები, ფრენები, ტრანსპორტი, მუზეუმები და რესტორნები",
+                heroSub: "აღმოაჩინე სვანეთი, რაჭა, კახეთი, თუშეთი ან იმოგზაურე პარიზში, რომსა და სტამბოლში. გაეცანი ზუსტ ისტორიას და დაჯავშნე ონლაინ.",
+                catAll: "ყველა სერვისი",
+                catHotels: "სასტუმროები",
+                catFlights: "ფრენები",
+                catTransport: "ტრანსპორტი",
+                catMuseums: "მუზეუმები",
+                catRestaurants: "რესტორნები",
+                catActivities: "აქტივობები",
+                bookNow: "დაჯავშნა"
+            },
+            en: {
+                myBookings: "My Bookings",
+                allDestinations: "All Destinations",
+                georgiaTravel: "Regions of Georgia",
+                outboundTravel: "Outbound Travel",
+                heroTitle: "Book Hotels, Flights, Transport, Museums & Restaurants",
+                heroSub: "Explore Svaneti, Racha, Kakheti, Tusheti or travel to Paris, Rome & Istanbul. Discover rich history and book online.",
+                catAll: "All Services",
+                catHotels: "Hotels",
+                catFlights: "Flights",
+                catTransport: "Transport",
+                catMuseums: "Museums",
+                catRestaurants: "Restaurants",
+                catActivities: "Activities",
+                bookNow: "Book Now"
+            },
+            de: {
+                myBookings: "Meine Buchungen",
+                allDestinations: "Alle Reiseziele",
+                georgiaTravel: "Regionen Georgiens",
+                outboundTravel: "Auslandsreisen",
+                heroTitle: "Buchen Sie Hotels, Flüge, Transport, Museen & Restaurants",
+                heroSub: "Entdecken Sie Swanetien, Ratscha, Kachetien oder reisen Sie nach Paris, Rom & Istanbul. Buchen Sie alles online.",
+                catAll: "Alle Services",
+                catHotels: "Hotels",
+                catFlights: "Flüge",
+                catTransport: "Transport",
+                catMuseums: "Museen",
+                catRestaurants: "Restaurants",
+                catActivities: "Aktivitäten",
+                bookNow: "Buchen"
+            },
+            es: {
+                myBookings: "Mis Reservas",
+                allDestinations: "Todos los Destinos",
+                georgiaTravel: "Regiones de Georgia",
+                outboundTravel: "Viajes Internacionales",
+                heroTitle: "Reserva Hoteles, Vuelos, Transporte, Museos y Restaurantes",
+                heroSub: "Explora Svaneti, Racha, Kakheti, Tusheti o viaja a París, Roma e Estambul. Descubre la historia y reserva en línea.",
+                catAll: "Todos los Servicios",
+                catHotels: "Hoteles",
+                catFlights: "Vuelos",
+                catTransport: "Transporte",
+                catMuseums: "Museos",
+                catRestaurants: "Restaurantes",
+                catActivities: "Actividades",
+                bookNow: "Reservar"
+            },
+            fr: {
+                myBookings: "Mes Réservations",
+                allDestinations: "Toutes Destinations",
+                georgiaTravel: "Régions de Géorgie",
+                outboundTravel: "Voyages à l'Étranger",
+                heroTitle: "Réservez Hôtels, Vols, Transports, Musées & Restaurants",
+                heroSub: "Explorez la Svanétie, la Ratcha, la Kakhétie ou voyagez à Paris, Rome & Istanbul. Réservez en ligne.",
+                catAll: "Tous les Services",
+                catHotels: "Hôtels",
+                catFlights: "Vols",
+                catTransport: "Transports",
+                catMuseums: "Musées",
+                catRestaurants: "Restaurants",
+                catActivities: "Activités",
+                bookNow: "Réserver"
+            },
+            ru: {
+                myBookings: "Мои бронирования",
+                allDestinations: "Все направления",
+                georgiaTravel: "Уголки Грузии",
+                outboundTravel: "Зарубежные туры",
+                heroTitle: "Забронируйте отели, авиабилеты, транспорт, музеи и рестораны",
+                heroSub: "Исследуйте Сванетию, Рачу, Кахетию, Тушетию или отправляйтесь в Париж, Рим и Стамбул. Бронируйте всё онлайн.",
+                catAll: "Все услуги",
+                catHotels: "Отели",
+                catFlights: "Авиабилеты",
+                catTransport: "Транспорт",
+                catMuseums: "Музеи",
+                catRestaurants: "Рестораны",
+                catActivities: "Активности",
+                bookNow: "Забронировать"
+            }
+        };
+
+        const listings = [
+            // საქართველო
+            {
+                id: 1, type: "georgia", category: "hotel", price: "180 GEL", unit: "/ night",
+                img: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80",
+                location: { ka: "მესტია, სვანეთი", en: "Mestia, Svaneti", de: "Mestia, Swanetien", es: "Mestia, Svaneti", fr: "Mestia, Svanétie", ru: "Местиа, Сванетия" },
+                title: { ka: "სვანური კოშკების საოჯახო სასტუმრო", en: "Svan Medieval Towers Guest House", de: "Gästehaus an den Swanischen Türmen", es: "Casa de Huéspedes Torres de Svaneti", fr: "Maison d'Hôtes des Tours Svanes", ru: "Гостевой дом у Сванских башен" },
+                desc: { ka: "UNESCO-ს მსოფლიო მემკვიდრეობის ძეგლი. IX-XII საუკუნეების თავდაცვითი კოშკები და კავკასიონის ხედი.", en: "UNESCO World Heritage site featuring 9th-12th century defensive stone towers with Caucasus mountain views.", de: "UNESCO-Weltkulturerbe mit Wehrtürmen aus dem 9.–12. Jahrhundert.", es: "Patrimonio de la Humanidad por la UNESCO con torres defensivas del siglo IX-XII.", fr: "Site du patrimoine mondial de l'UNESCO abritant des tours défensives du IXe-XIIe siècle.", ru: "Объект Всемирного наследия ЮНЕСКО с оборонительными башнями IX-XII веков." }
+            },
+            {
+                id: 2, type: "georgia", category: "restaurant", price: "120 GEL", unit: "/ table",
+                img: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=600&q=80",
+                location: { ka: "სიღნაღი, კახეთი", en: "Sighnaghi, Kakheti", de: "Sighnaghi, Kachetien", es: "Sighnaghi, Kakheti", fr: "Sighnaghi, Kakhétie", ru: "Сигнахи, Кахетия" },
+                title: { ka: "ღვინის მარანი და ტრადიციული ვახშამი", en: "Wine Cellar & Traditional Feast", de: "Weinkeller & Traditionelles Abendessen", es: "Bodega de Vino y Cena Tradicional", fr: "Cave à Vin & Dîner Traditionnel", ru: "Винный погреб и традиционный ужин" },
+                desc: { ka: "ქართული ტრადიციული ქვევრის ღვინის 8,000-წლიანი ისტორია და ალაზნის ველის ხედი.", en: "Explore 8,000 years of traditional Qvevri winemaking with stunning views over the Alazani Valley.", de: "Erkunden Sie 8.000 Jahre traditionelle Qvevri-Weinkultur im Alazani-Tal.", es: "Explore 8,000 años de tradición vinícola en Qvevri con vistas al valle de Alazani.", fr: "Découvrez 8 000 ans de tradition vinicole en Qvevri avec vue sur la vallée d'Alazani.", ru: "8,000 лет истории традиционного виноделия в квеври с видом на Алазанскую долину." }
+            },
+            {
+                id: 3, type: "georgia", category: "activity", price: "250 GEL", unit: "/ jeep",
+                img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80",
+                location: { ka: "ომალო, თუშეთი", en: "Omalo, Tusheti", de: "Omalo, Tuschetien", es: "Omalo, Tusheti", fr: "Omalo, Touchétie", ru: "Омало, Тушетия" },
+                title: { ka: "თუშეთის 4x4 ჯიპ-ტური და კესელოს ციხე", en: "Tusheti 4x4 Expedition & Keselo Fortress", de: "Tuschetien 4x4 Expedition & Keselo Festung", es: "Expedición 4x4 en Tusheti y Fortaleza Keselo", fr: "Expédition 4x4 en Touchétie & Forteresse Keselo", ru: "4x4 Джип-тур в Тушетию и крепость Кесело" },
+                desc: { ka: "ალპური უღელტეხილი (2900მ), უძველესი სოფლები და ხელუხლებელი ბუნება.", en: "Cross Abano Pass (2900m) to reach ancient medieval stone villages and untouched alpine nature.", de: "Überqueren Sie den Abano-Pass (2900m) zu mittelalterlichen Steindörfern.", es: "Cruce el paso Abano (2900m) hasta antiguos pueblos medievales de piedra.", fr: "Traversez le col d'Abano (2900m) vers d'anciens villages médiévaux.", ru: "Перевал Абано (2900 м), средневековые каменные деревни и нетронутая природа." }
+            },
+
+            // საზღვარგარეთი
+            {
+                id: 4, type: "abroad", category: "flight", price: "$190", unit: "/ seat",
+                img: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=600&q=80",
+                location: { ka: "თბილისი -> პარიზი", en: "Tbilisi -> Paris", de: "Tiflis -> Paris", es: "Tbilisi -> París", fr: "Tbilisi -> Paris", ru: "Тбилиси -> Париж" },
+                title: { ka: "პირდაპირი ფრენა პარიზის მიმართულებით", en: "Direct Flight to Paris (CDG)", de: "Direktflug nach Paris (CDG)", es: "Vuelo Directo a París (CDG)", fr: "Vol Direct pour Paris (CDG)", ru: "Прямой рейс в Париж (CDG)" },
+                desc: { ka: "კომფორტული პირდაპირი რეისი შარლ დე გოლის აეროპორტში, ბარგითა და კვებით.", en: "Direct flight to Charles de Gaulle Airport including checked baggage and in-flight meals.", de: "Direktflug zum Flughafen Charles de Gaulle inklusive Gepäck und Verpflegung.", es: "Vuelo directo al aeropuerto Charles de Gaulle con багаже y comida incluídos.", fr: "Vol direct vers l'aéroport Charles de Gaulle avec bagages et repas inclus.", ru: "Прямой рейс в аэропорт Шарль де Голль с багажом и питанием." }
+            },
+            {
+                id: 5, type: "abroad", category: "museum", price: "€22", unit: "/ ticket",
+                img: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=600&q=80",
+                location: { ka: "პარიზი, საფრანგეთი", en: "Paris, France", de: "Paris, Frankreich", es: "París, Francia", fr: "Paris, France", ru: "Париж, Франция" },
+                title: { ka: "ლუვრის მუზეუმის სწრაფი შესასვლელი", en: "Louvre Museum Priority Ticket", de: "Louvre Museum Bevorzugter Einlass", es: "Entrada Prioritaria al Museo del Louvre", fr: "Billet Coupe-File pour le Louvre", ru: "Билет в музей Лувр без очереди" },
+                desc: { ka: "XII საუკუნის სამეფო სასახლე, მსოფლიოში უდიდესი მუზეუმი, სადაც ინახება მონა ლიზა.", en: "World's largest art museum housed in a 12th-century royal palace, home to the Mona Lisa.", de: "Das größte Kunstmuseum der Welt in einem königlichen Palast aus dem 12. Jahrhundert.", es: "El museo de arte más grande del mundo en un palacio real del siglo XII.", fr: "Le plus grand musée d'art au monde situé dans un palais royal du XIIe siècle.", ru: "Крупнейший художественный музей мира в королевском дворце XII века." }
+            },
+            {
+                id: 6, type: "abroad", category: "activity", price: "€160", unit: "/ flight",
+                img: "https://images.unsplash.com/photo-1507608869274-d3177c8bb4c7?auto=format&fit=crop&w=600&q=80",
+                location: { ka: "კაპადოკია, თურქეთი", en: "Cappadocia, Turkey", de: "Kappadokien, Türkei", es: "Capadocia, Turquía", fr: "Cappadoce, Turquie", ru: "Каппадокия, Турция" },
+                title: { ka: "საჰაერო ბუშტით ფრენა მზის ამოსვლისას", en: "Sunrise Hot Air Balloon Flight", de: "Heißluftballonfahrt bei Sonnenaufgang", es: "Vuelo en Globo al Amanecer", fr: "Vol en Montgolfière au Lever du Soleil", ru: "Полет на воздушном шаре на рассвете" },
+                desc: { ka: "ვულკანური წარმოშობის უნიკალური ხეობები და „ზღაპრული ბუხრები“ ჩიტის ფრენის სიმაღლიდან.", en: "Fly over surreal volcanic valleys and fairy chimneys with a champagne celebration upon landing.", de: "Fliegen Sie über märchenhafte vulkanische Täler mit Champagner-Empfang.", es: "Vuele sobre surrealistas valles volcánicos con celebración al aterrizar.", fr: "Survolez des vallées volcaniques féeriques avec célébration au champagne.", ru: "Полет над уникальными вулканическими долинами с шампанским после посадки." }
+            }
+        ];
+
+        let currentLang = 'ka';
+        let activeType = 'all';
+        let activeCategory = 'all';
+
+        function renderListings() {
+            const grid = document.getElementById('listingsGrid');
+            grid.innerHTML = '';
+
+            const filtered = listings.filter(item => {
+                const matchType = activeType === 'all' || item.type === activeType;
+                const matchCategory = activeCategory === 'all' || item.category === activeCategory;
+                return matchType && matchCategory;
+            });
+
+            filtered.forEach(item => {
+                const title = item.title[currentLang] || item.title['en'];
+                const loc = item.location[currentLang] || item.location['en'];
+                const desc = item.desc[currentLang] || item.desc['en'];
+                const bookText = i18n[currentLang].bookNow;
+
+                grid.innerHTML += `
+                    <div class="card">
+                        <div class="card-img" style="background-image: url('${item.img}')">
+                            <span class="badge">${item.type === 'georgia' ? 'GEORGIA' : 'GLOBAL'}</span>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title">${title}</h3>
+                            <div class="card-loc"><i class="fa-solid fa-location-dot"></i> ${loc}</div>
+                            <div class="history-box">
+                                <i class="fa-solid fa-circle-info"></i> ${desc}
+                            </div>
+                            <div class="card-footer">
+                                <div class="price">${item.price} <span>${item.unit}</span></div>
+                                <button class="btn-book" onclick="alert('Booking started!')">${bookText}</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            const flags = { ka: '🇬🇪 ქართული', en: '🇬🇧 English', de: '🇩🇪 Deutsch', es: '🇪🇸 Español', fr: '🇫🇷 Français', ru: '🇷🇺 Русский' };
+            document.getElementById('currentLang').innerText = flags[lang];
+            document.getElementById('langDropdown').classList.remove('show');
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[lang][key]) el.innerText = i18n[lang][key];
+            });
+
+            renderListings();
+        }
+
+        function toggleLangDropdown() {
+            document.getElementById('langDropdown').classList.toggle('show');
+        }
+
+        function filterType(type, btn) {
+            activeType = type;
+            document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderListings();
+        }
+
+        function filterCategory(cat, btn) {
+            activeCategory = cat;
+            document.querySelectorAll('.cat-chip').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderListings();
+        }
+
+        renderListings();
+    </script>
+</body>
+</html>
